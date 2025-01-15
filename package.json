@@ -1,0 +1,24 @@
+{
+  "name": "rro-agent",
+  "version": "1.0.0",
+  "description": "Robert's Rules of Order 罗规小蜜",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhudy/RRO-Agent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhudy/RRO-Agent/issues"
+  },
+  "homepage": "https://github.com/zhudy/RRO-Agent#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}
