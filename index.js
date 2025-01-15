@@ -38,6 +38,7 @@ app.post('/register', async (req, res) => {
  */
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
+    const userList = await database.getUsers();
     const user = userList.find(u => u.username === username && u.password === password);
     if (user) {
         res.status(200).json({ message: '登录成功', userId: user.id });
