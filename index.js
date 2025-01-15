@@ -1,43 +1,63 @@
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const User = require('./user');
-const ChatRoom = require('./chatRoom');
-const path = require('path');
+import express from 'express';
+import { Server } from 'socket.io';
+import * as database from './database.js';
+import User from './user.js';
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
+const httpServer = app.listen(3000, () => {
+    console.log('服务器正在运行，监听端口 3000');
+});
+const io = new Server(httpServer);
 
-// 提供静态文件
-app.use(express.static(path.join(__dirname)));
-
-// 解析 JSON 请求体
 app.use(express.json());
+app.use(express.static('./'));
+//app.use(express.static('public'));
 
-const userList = []; // 存储用户的数组
+// 从数据库获取用户列表
+const userList = await database.getUsers();
 
-// 用户注册
-app.post('/register', (req, res) => {
+/**
+ * 用户注册
+ * @param {Object} req - 请求对象
+ * @param {Object} res - 响应对象
+ */
+app.post('/register', async (req, res) => {
     const { username, password } = req.body;
-    const user = new User(username, password);
-    const success = User.register(userList);
-    if (success) {
-        res.status(201).json({ message: '注册成功' });
-    } else {
-        res.status(400).json({ message: '用户名已存在' });
+    try {
+        const userId = await database.addUser(username, password);
+        res.status(201).json({ message: '注册成功', userId });
+    } catch (error) {
+        res.status(400).json({ message: '用户名已存在或其他错误', error: error.message });
     }
 });
 
-// 用户登录
-app.post('/login', (req, res) => {
+/**
+ * 用户登录
+ * @param {Object} req - 请求对象
+ * @param {Object} res - 响应对象
+ */
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    const user = new User(username, password);
-    const success = User.login(userList);
-    if (success) {
-        res.status(200).json({ message: '登录成功' });
+    const user = userList.find(u => u.username === username && u.password === password);
+    if (user) {
+        res.status(200).json({ message: '登录成功', userId: user.id });
     } else {
         res.status(401).json({ message: '用户名或密码错误' });
+    }
+});
+
+/**
+ * 发送消息
+ * @param {Object} req - 请求对象
+ * @param {Object} res - 响应对象
+ */
+app.post('/messages', async (req, res) => {
+    const { userId, message } = req.body;
+    try {
+        const messageId = await database.addMessage(userId, message);
+        res.status(201).json({ message: '消息发送成功', messageId });
+    } catch (error) {
+        res.status(400).json({ message: '发送消息失败', error: error.message });
     }
 });
 
@@ -62,9 +82,4 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('用户已断开连接');
     });
-});
-
-// 启动服务器
-server.listen(3000, () => {
-    console.log('服务器正在运行在 http://localhost:3000');
 }); 
