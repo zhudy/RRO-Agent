@@ -3,10 +3,14 @@ const http = require('http');
 const socketIo = require('socket.io');
 const User = require('./user');
 const ChatRoom = require('./chatRoom');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+
+// 提供静态文件
+app.use(express.static(path.join(__dirname)));
 
 // 用户注册和登录
 app.post('/register', (req, res) => {
@@ -28,6 +32,11 @@ io.on('connection', (socket) => {
 
     socket.on('joinRoom', (roomName) => {
         // 加入房间逻辑
+    });
+
+    socket.on('chatMessage', (message) => {
+        // 广播消息
+        io.emit('chatMessage', message);
     });
 
     socket.on('disconnect', () => {

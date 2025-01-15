@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线聊天室</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        #messageInput {
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <h1>在线聊天室</h1>
+    <div id="messages"></div>
+    <input id="messageInput" type="text" placeholder="输入消息...">
+    <button id="sendButton">发送</button>
+
+    <script>
+        const socket = io('http://localhost:3000');
+
+        // 创建房间
+        socket.emit('createRoom', '房间1');
+
+        // 加入房间
+        socket.emit('joinRoom', '房间1');
+
+        // 发送消息
+        document.getElementById('sendButton').onclick = function() {
+            const message = document.getElementById('messageInput').value;
+            socket.emit('chatMessage', message);
+            document.getElementById('messageInput').value = '';
+        };
+
+        // 接收消息
+        socket.on('chatMessage', function(message) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML += `<p>${message}</p>`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // 滚动到最新消息
+        });
+    </script>
+</body>
+</html>
