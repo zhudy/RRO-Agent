@@ -29,6 +29,11 @@
 
     <script>
         const socket = io('http://localhost:3000');
+        /** 
+         * 从登录成功的用户名获取
+         * 假设用户名存储在 sessionStorage 中
+         */
+        const username = sessionStorage.getItem('username') || prompt("请输入你的用户名"); // 提示用户输入用户名
 
         // 创建房间
         socket.emit('createRoom', '房间1');
@@ -39,14 +44,16 @@
         // 发送消息
         document.getElementById('sendButton').onclick = function() {
             const message = document.getElementById('messageInput').value;
-            socket.emit('chatMessage', message);
-            document.getElementById('messageInput').value = '';
+            if (message) { // 确保消息不为空
+                socket.emit('chatMessage', { username, message }); // 发送包含用户名的消息
+                document.getElementById('messageInput').value = ''; // 清空输入框
+            }
         };
 
         // 接收消息
-        socket.on('chatMessage', function(message) {
+        socket.on('chatMessage', function(data) {
             const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML += `<p>${message}</p>`;
+            messagesDiv.innerHTML += `<p><strong>${data.username}:</strong> ${data.message}</p>`; // 显示用户名和消息
             messagesDiv.scrollTop = messagesDiv.scrollHeight; // 滚动到最新消息
         });
     </script>
