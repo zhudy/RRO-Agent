@@ -9,20 +9,27 @@ class User {
 
     /**
      * 注册用户
+     * @param {Array} userList 用户列表
      * @returns {boolean} 注册是否成功
      */
-    register() {
-        // 注册逻辑
-        return true; // 示例返回
+    static register(userList) {
+        // 检查用户名是否已存在
+        const existingUser = userList.find(user => user.username === this.username);
+        if (existingUser) {
+            return false; // 用户名已存在
+        }
+        userList.push(new User(this.username, this.password));
+        return true; // 注册成功
     }
 
     /**
      * 登录用户
+     * @param {Array} userList 用户列表
      * @returns {boolean} 登录是否成功
      */
-    login() {
-        // 登录逻辑
-        return true; // 示例返回
+    static login(userList) {
+        const user = userList.find(user => user.username === this.username && user.password === this.password);
+        return user !== undefined; // 登录成功返回 true
     }
 }
 

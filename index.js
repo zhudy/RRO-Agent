@@ -12,13 +12,33 @@ const io = socketIo(server);
 // 提供静态文件
 app.use(express.static(path.join(__dirname)));
 
-// 用户注册和登录
+// 解析 JSON 请求体
+app.use(express.json());
+
+const userList = []; // 存储用户的数组
+
+// 用户注册
 app.post('/register', (req, res) => {
-    // 注册逻辑
+    const { username, password } = req.body;
+    const user = new User(username, password);
+    const success = User.register(userList);
+    if (success) {
+        res.status(201).json({ message: '注册成功' });
+    } else {
+        res.status(400).json({ message: '用户名已存在' });
+    }
 });
 
+// 用户登录
 app.post('/login', (req, res) => {
-    // 登录逻辑
+    const { username, password } = req.body;
+    const user = new User(username, password);
+    const success = User.login(userList);
+    if (success) {
+        res.status(200).json({ message: '登录成功' });
+    } else {
+        res.status(401).json({ message: '用户名或密码错误' });
+    }
 });
 
 // Socket.io 连接
@@ -34,9 +54,9 @@ io.on('connection', (socket) => {
         // 加入房间逻辑
     });
 
-    socket.on('chatMessage', (message) => {
-        // 广播消息
-        io.emit('chatMessage', message);
+    socket.on('chatMessage', (data) => {
+        // 广播消息，包含用户名和消息内容
+        io.emit('chatMessage', data);
     });
 
     socket.on('disconnect', () => {
