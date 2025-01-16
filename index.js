@@ -10,8 +10,7 @@ const httpServer = app.listen(3000, () => {
 const io = new Server(httpServer);
 
 app.use(express.json());
-app.use(express.static('./'));
-//app.use(express.static('public'));
+app.use(express.static('public'));
 
 // 从数据库获取用户列表
 const userList = await database.getUsers();

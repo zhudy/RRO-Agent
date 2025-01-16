@@ -22,3 +22,7 @@ Robert's Rules of Order 罗规小蜜
 
 启动聊天服务: node index.js
 浏览器访问3000端口
+
+2do: 
+语音录制，转文字
+新场景：抽奖，拍卖，教培，对弈，对战Tetris，桥牌/掼蛋
