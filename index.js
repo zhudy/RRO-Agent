@@ -98,6 +98,7 @@ io.on('connection', (socket) => {
     socket.on('chatMessage', (data) => {
         // 广播消息，包含用户名和消息内容
         io.emit('chatMessage', data);
+        database.addMessage(data.username, data.message, data.currentroom)
     });
 
     socket.on('disconnect', () => {

@@ -50,6 +50,7 @@ const db = new sqlite3.Database('db.sqlite', (err) => {
 
         db.run(`CREATE TABLE IF NOT EXISTS messages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            roomId INTEGER,
             userId INTEGER,
             message TEXT,
             FOREIGN KEY (userId) REFERENCES users(id)
@@ -101,9 +102,9 @@ export const addUser = (username, password) => {
  * @param {string} message - 消息内容
  * @returns {Promise<void>}
  */
-export const addMessage = (userId, message) => {
+export const addMessage = (roomId, userId, message) => {
     return new Promise((resolve, reject) => {
-        db.run('INSERT INTO messages (userId, message) VALUES (?, ?)', [userId, message], function(err) {
+        db.run('INSERT INTO messages (roomId, userId, message) VALUES (?, ?, ?)', [roomId, userId, message], function(err) {
             if (err) {
                 reject(err);
             } else {
