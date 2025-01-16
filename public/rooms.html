@@ -13,13 +13,35 @@
             padding: 0;
         }
     </style>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <h1>房间列表</h1>
     <ul id="roomList"></ul>
 
+    <button id="createRoomButton">创建房间</button>
+    <input type="text" id="roomNameInput" placeholder="输入房间名称" />
+
     <script>
-        async function fetchRooms() {
+        const socket = io('http://localhost:3000');
+
+    // 处理创建房间按钮点击事件
+    document.getElementById('createRoomButton').addEventListener('click', () => {
+        const roomName = document.getElementById('roomNameInput').value;
+        const userName = sessionStorage.getItem('username') || prompt("请输入你的用户名"); // 提示用户输入用户名
+        if (roomName) {
+            socket.emit('createRoom', roomName, userName );
+        } else {
+            alert('请输入房间名称');
+        }
+    });
+
+    socket.on('roomCreated', (data) => {
+        alert('房间已创建: ' + data.roomId + ": " + data.roomName );
+        location.reload();
+    });
+
+    async function fetchRooms() {
             try {
                 const response = await fetch('/rooms', {
                     method: 'POST',
@@ -34,14 +56,21 @@
                 const roomList = document.getElementById('roomList');
                 data.rooms.forEach(room => {
                     const li = document.createElement('li');
-                    li.textContent = "房间名: " + room.name + " owner: " + room.owner + " users :" + room.users; // 假设房间名称是字符串
+                    const roomLink = document.createElement('a'); // 创建链接元素
+                    roomLink.href = "#"; // 设置链接的目标
+                    roomLink.textContent = "房间名: " + room.name; // 设置链接文本
+                    roomLink.onclick = () => {
+                        // 处理点击事件，例如导航到房间详情
+                        alert('点击了房间: ' + room.name);
+                    };
+                    li.appendChild(roomLink); // 将链接添加到列表项中
+                    li.appendChild(document.createTextNode(" owner: " + room.owner + " users :" + room.users)); // 添加其他信息
                     roomList.appendChild(li);
                 });
             } catch (error) {
                 console.error('获取房间列表失败:', error);
             }
         }
-
         // 页面加载时获取房间列表
         window.onload = fetchRooms;
     </script>

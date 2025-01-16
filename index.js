@@ -81,8 +81,14 @@ io.on('connection', (socket) => {
     console.log('用户已连接');
 
     // 处理房间创建和加入
-    socket.on('createRoom', (roomName) => {
-        // 创建房间逻辑
+    socket.on('createRoom', async (roomName, userName) => {
+        try {
+            console.log('创建房间: ' + roomName + " userName: " + userName);
+            const roomId = await database.addRoom(roomName, userName);
+            socket.emit('roomCreated', { roomId, roomName });
+        } catch (error) {
+            console.error('创建房间失败:', error.message);
+        }
     });
 
     socket.on('joinRoom', (roomName) => {
