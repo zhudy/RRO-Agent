@@ -62,6 +62,8 @@
                     roomLink.onclick = () => {
                         // 处理点击事件，例如导航到房间详情
                         alert('点击了房间: ' + room.name);
+                        sessionStorage.setItem('currentRoom', room.name);
+                        window.location.href = 'chat.html';
                     };
                     li.appendChild(roomLink); // 将链接添加到列表项中
                     li.appendChild(document.createTextNode(" owner: " + room.owner + " users :" + room.users)); // 添加其他信息
