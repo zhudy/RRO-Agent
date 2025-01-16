@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Robert's Rules of Order 罗规小蜜",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

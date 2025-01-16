@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>在线聊天室 - 首页</title>
+    <title>登录</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,48 +18,60 @@
     </style>
 </head>
 <body>
-    <h1>在线聊天室</h1>
-    <div id="formContainer">
-        <h2>注册</h2>
-        <input type="text" id="registerUsername" placeholder="用户名" required>
-        <input type="password" id="registerPassword" placeholder="密码" required>
-        <button id="registerButton">注册</button>
-    </div>
+    <div id="app">
+        <!-- 登录界面 -->
+        <div id="login">
+            <h2>登录</h2>
+            <form>
+                <label for="username">用户名:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">密码:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="button" id="loginButton">登录</button>
+            </form>
+            <p>还没有账户？<a href="#register">点击这里注册</a></p>
+        </div>
 
-    <div id="formContainer">
-        <h2>登录</h2>
-        <input type="text" id="loginUsername" placeholder="用户名" required>
-        <input type="password" id="loginPassword" placeholder="密码" required>
-        <button id="loginButton">登录</button>
+        <!-- 注册界面 -->
+        <div id="register" style="display: none;">
+            <h2>注册</h2>
+            <form>
+                <label for="new-username">用户名:</label>
+                <input type="text" id="new-username" name="new-username" required>
+                <label for="new-password">密码:</label>
+                <input type="password" id="new-password" name="new-password" required>
+                <button type="button" id="registerButton">注册</button>
+            </form>
+            <p>已经有账户？<a href="#login">点击这里登录</a></p>
+        </div>
     </div>
 
     <script>
-        // 注册用户
-        document.getElementById('registerButton').onclick = function() {
-            const username = document.getElementById('registerUsername').value;
-            const password = document.getElementById('registerPassword').value;
+        // JavaScript 代码来处理显示和隐藏登录/注册界面
+        const loginDiv = document.getElementById('login');
+        const registerDiv = document.getElementById('register');
 
-            fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                if (data.message === '注册成功') {
-                    document.getElementById('registerUsername').value = '';
-                    document.getElementById('registerPassword').value = '';
-                }
-            });
+        // 默认显示登录界面
+        window.onload = function() {
+            loginDiv.style.display = 'block';
+            registerDiv.style.display = 'none';
+        };
+
+        // 处理链接点击事件
+        document.querySelector('a[href="#register"]').onclick = function() {
+            loginDiv.style.display = 'none';
+            registerDiv.style.display = 'block';
+        };
+
+        document.querySelector('a[href="#login"]').onclick = function() {
+            registerDiv.style.display = 'none';
+            loginDiv.style.display = 'block';
         };
 
         // 登录用户
         document.getElementById('loginButton').onclick = function() {
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
             fetch('/login', {
                 method: 'POST',
@@ -74,8 +86,28 @@
                 if (data.message === '登录成功') {
                     // 保存用户名到 sessionStorage
                     sessionStorage.setItem('username', username);
-                    // 登录成功后可以重定向到聊天室页面
+                    // 登录成功后重定向到聊天室页面
                     window.location.href = 'chat.html';
+                }
+            });
+        };
+        // 注册用户
+        document.getElementById('registerButton').onclick = function() {
+            const username = document.getElementById('new-username').value;
+            const password = document.getElementById('new-password').value;
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.message === '注册成功') {
+                    document.getElementById('new-username').value = '';
+                    document.getElementById('new-password').value = '';
                 }
             });
         };
