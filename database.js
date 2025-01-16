@@ -107,4 +107,38 @@ export const addMessage = (userId, message) => {
     });
 };
 
+/**
+ * 获取房间列表
+ * @returns {Promise<Array>} 房间列表
+ */
+export const getRooms = () => {
+    return new Promise((resolve, reject) => {
+        db.all('SELECT * FROM rooms', [], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+};
+
+/**
+ * 添加房间
+ * @param {string} name - 房间名称
+ * @param {string} owner - 房间拥有者
+ * @returns {Promise<number>} 新插入房间的 ID
+ */
+export const addRoom = (name, owner) => {
+    return new Promise((resolve, reject) => {
+        db.run('INSERT INTO rooms (name, owner) VALUES (?, ?)', [name, owner], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(this.lastID); // 返回新插入房间的 ID
+            }
+        });
+    });
+};
+
 // 其他数据库操作...

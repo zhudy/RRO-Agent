@@ -1,6 +1,7 @@
 import express from 'express';
 import { Server } from 'socket.io';
 import * as database from './database.js';
+import { getRooms } from './database.js';
 import User from './user.js';
 
 const app = express();
@@ -58,6 +59,20 @@ app.post('/messages', async (req, res) => {
         res.status(201).json({ message: '消息发送成功', messageId });
     } catch (error) {
         res.status(400).json({ message: '发送消息失败', error: error.message });
+    }
+});
+
+/**
+ * 列出所有房间
+ * @param {Object} req - 请求对象
+ * @param {Object} res - 响应对象
+ */
+app.post('/rooms', async (req, res) => {
+    try {
+        const rooms = await getRooms();
+        res.status(200).json({ rooms });
+    } catch (error) {
+        res.status(500).json({ error: '获取房间列表失败' });
     }
 });
 

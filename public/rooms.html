@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>房间列表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>房间列表</h1>
+    <ul id="roomList"></ul>
+
+    <script>
+        async function fetchRooms() {
+            try {
+                const response = await fetch('/rooms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('网络错误');
+                }
+                const data = await response.json();
+                const roomList = document.getElementById('roomList');
+                data.rooms.forEach(room => {
+                    const li = document.createElement('li');
+                    li.textContent = "房间名: " + room.name + " owner: " + room.owner + " users :" + room.users; // 假设房间名称是字符串
+                    roomList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('获取房间列表失败:', error);
+            }
+        }
+
+        // 页面加载时获取房间列表
+        window.onload = fetchRooms;
+    </script>
+</body>
+</html> 
