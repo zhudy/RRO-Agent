@@ -13,6 +13,32 @@ const db = new sqlite3.Database('db.sqlite', (err) => {
         )`, (err) => {
             if (err) {
                 console.error('创建用户表失败:', err.message);
+            }else{
+                /* 添加默认用户 */
+                db.run(`INSERT INTO users (username, password) VALUES ('admin', 'admin')
+                `, (err) => {
+                    if (err) {
+                        console.error('添加默认用户失败:', err.message);
+                    }
+                });
+            }
+        });
+
+        db.run(`CREATE TABLE IF NOT EXISTS rooms (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE,
+            owner TEXT,
+            users TEXT
+        )`, (err) => {
+            if (err) {
+                console.error('创建房间表失败:', err.message);
+            } else {
+                // 添加默认房间
+                db.run(`INSERT INTO rooms (name, owner) VALUES ('public', 'admin')`, (err) => {
+                    if (err) {
+                        console.error('添加默认房间失败:', err.message);
+                    }
+                });
             }
         });
 
@@ -26,7 +52,7 @@ const db = new sqlite3.Database('db.sqlite', (err) => {
                 console.error('创建消息表失败:', err.message);
             }
         });
-    }
+    };
 });
 
 /**
