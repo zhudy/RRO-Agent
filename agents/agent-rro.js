@@ -68,5 +68,6 @@ chatClient.init();
 
 // 示例：发送一条消息
 setTimeout(() => {
-    chatClient.sendMessage('你好，世界！', rname);
+    chatClient.sendMessage('你好，世界！我是罗规小蜜，请叫我罗蜜哦', rname);
+    chatClient.sendMessage('我的背后有强大的LLM支撑，你可以跟我聊天', rname);
 }, 2000);

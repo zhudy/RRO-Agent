@@ -126,8 +126,22 @@ io.on('connection', (socket) => {
                     currentroom: currentroom
                 });
                 console.log(`私信发送给 ${targetUsername}: ${privateMessage}`);
+                // 反馈给发送方
+                const senderSocket = Array.from(io.sockets.sockets.values()).find(socket => socket.username === data.username);
+                senderSocket.emit('chatMessage', {
+                    username: data.username,
+                    message: '私信发送成功：' + message,
+                    currentroom: currentroom
+                });
             } else {
                 console.log(`用户 ${targetUsername} 不在线`);
+                // 反馈给发送方
+                const senderSocket = Array.from(io.sockets.sockets.values()).find(socket => socket.username === data.username);
+                senderSocket.emit('chatMessage', {
+                    username: data.username,
+                    message: '用户不在线私信发送失败：' + message,
+                    currentroom: currentroom
+                });
             }
         } else {
             // 群发消息,包含用户名和消息内容
