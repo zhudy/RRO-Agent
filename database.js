@@ -21,6 +21,7 @@ const db = new sqlite3.Database('db.sqlite', (err) => {
                         console.error('添加默认用户失败:', err.message);
                     }
                 });
+                db.run(`INSERT INTO users (username, password) VALUES ('rro', 'rro')`);
             }
         });
 
@@ -39,6 +40,7 @@ const db = new sqlite3.Database('db.sqlite', (err) => {
                         console.error('添加默认房间失败:', err.message);
                     }
                 });
+                db.run(`INSERT INTO rooms (name, owner) VALUES ('rro', 'admin')`);
                 db.run(`INSERT INTO rooms (name, owner) VALUES ('抽奖', 'admin')`);
                 db.run(`INSERT INTO rooms (name, owner) VALUES ('拍卖', 'admin')`);
                 db.run(`INSERT INTO rooms (name, owner) VALUES ('教培', 'admin')`);

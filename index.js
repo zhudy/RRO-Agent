@@ -1,3 +1,7 @@
+//聊天服务器
+//npm install socket.io-client
+//node index.js #可能需要多运行两次才能正常创建db.sqlite 和对应的表
+
 import express from 'express';
 import { Server } from 'socket.io';
 import * as database from './database.js';
@@ -98,6 +102,7 @@ io.on('connection', (socket) => {
     socket.on('chatMessage', (data) => {
         // 广播消息，包含用户名和消息内容
         io.emit('chatMessage', data);
+        console.log(data.username, data.message, data.currentroom);
         database.addMessage(data.username, data.message, data.currentroom)
     });
 

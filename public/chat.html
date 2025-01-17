@@ -57,6 +57,7 @@
 
         // 接收消息
         socket.on('chatMessage', function(data) {
+            console.log("收到消息: ", data.username, data.message, data.currentroom);
             if(data.currentroom != currentroom) return;    //非本房间消息直接不予处理
             const messagesDiv = document.getElementById('messages');
             messagesDiv.innerHTML += `<p><strong>${data.username}:</strong> ${data.message}</p>`; // 显示用户名和消息
