@@ -108,7 +108,7 @@ io.on('connection', (socket) => {
         //console.log(username, message, currentroom);
         console.log(message);
         // 检查消息是否包含 "to uname:xxx" 格式
-        const privateMessageMatch = message.match(/^to\s+uname:\s*(\w+) (.+)$/);
+        const privateMessageMatch = message.match(/^to\s+uname:\s*([\p{L}\d]+)\s+(.+)$/iu);
 
         if (privateMessageMatch) {
             const targetUsername = privateMessageMatch[1]; // 提取目标用户名
@@ -122,7 +122,7 @@ io.on('connection', (socket) => {
                 // 发送私信给目标用户
                 targetSocket.emit('chatMessage', {
                     username: username,
-                    message: privateMessage,
+                    message: '私信来也：' + privateMessage,
                     currentroom: currentroom
                 });
                 console.log(`私信发送给 ${targetUsername}: ${privateMessage}`);
