@@ -100,10 +100,42 @@ io.on('connection', (socket) => {
     });
 
     socket.on('chatMessage', (data) => {
-        // 广播消息，包含用户名和消息内容
-        io.emit('chatMessage', data);
-        console.log(data.username, data.message, data.currentroom);
-        database.addMessage(data.username, data.message, data.currentroom)
+        const message = data.message;
+        const username = data.username;
+        const currentroom = data.currentroom;
+
+        socket.username = data.username;    //以便后续消息处理中引用
+        //console.log(username, message, currentroom);
+        console.log(message);
+        // 检查消息是否包含 "to uname:xxx" 格式
+        const privateMessageMatch = message.match(/^to\s+uname:\s*(\w+) (.+)$/);
+
+        if (privateMessageMatch) {
+            const targetUsername = privateMessageMatch[1]; // 提取目标用户名
+            const privateMessage = privateMessageMatch[2]; // 提取私信内容
+
+            // 查找目标用户的 socket ID
+            //console.log(io.sockets.sockets.values());
+            const targetSocket = Array.from(io.sockets.sockets.values()).find(socket => socket.username === targetUsername);
+
+            if (targetSocket) {
+                // 发送私信给目标用户
+                targetSocket.emit('chatMessage', {
+                    username: username,
+                    message: privateMessage,
+                    currentroom: currentroom
+                });
+                console.log(`私信发送给 ${targetUsername}: ${privateMessage}`);
+            } else {
+                console.log(`用户 ${targetUsername} 不在线`);
+            }
+        } else {
+            // 群发消息,包含用户名和消息内容
+            io.emit('chatMessage', data);
+        }
+
+        // 将消息存储到数据库
+        database.addMessage(currentroom, username, message);
     });
 
     socket.on('disconnect', () => {
