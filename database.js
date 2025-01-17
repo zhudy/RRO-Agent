@@ -14,14 +14,19 @@ const db = new sqlite3.Database('db.sqlite', (err) => {
             if (err) {
                 console.error('创建用户表失败:', err.message);
             }else{
-                /* 添加默认用户 */
-                db.run(`INSERT INTO users (username, password) VALUES ('admin', 'admin')
-                `, (err) => {
+                db.get('SELECT * FROM users WHERE username = ?', 'admin', (err, row) => {
                     if (err) {
-                        console.error('添加默认用户失败:', err.message);
+                        console.error('查询用户失败:', err.message);
+                    } else if (!row) {
+                        //添加默认用户: 用户不存在，插入新用户
+                        db.run('INSERT INTO users (username, password) VALUES (?, ?)', 'admin', 'admin', (err) => {
+                            if (err) {
+                                console.error('添加默认用户失败:', err.message);
+                            }
+                        });
+                        db.run(`INSERT INTO users (username, password) VALUES ('rro', 'rro')`);
                     }
                 });
-                db.run(`INSERT INTO users (username, password) VALUES ('rro', 'rro')`);
             }
         });
 
@@ -34,19 +39,25 @@ const db = new sqlite3.Database('db.sqlite', (err) => {
             if (err) {
                 console.error('创建房间表失败:', err.message);
             } else {
-                // 添加默认房间
-                db.run(`INSERT INTO rooms (name, owner) VALUES ('public', 'admin')`, (err) => {
+                db.get('SELECT * FROM rooms WHERE name = ?', 'public', (err, row) => {
                     if (err) {
-                        console.error('添加默认房间失败:', err.message);
+                        console.error('查询房间失败:', err.message);
+                    } else if (!row) {
+                        // 房间不存在，添加默认房间
+                        db.run(`INSERT INTO rooms (name, owner) VALUES ('public', 'admin')`, (err) => {
+                            if (err) {
+                                console.error('添加默认房间失败:', err.message);
+                            }
+                        });
+                        db.run(`INSERT INTO rooms (name, owner) VALUES ('rro', 'rro')`);
+                        db.run(`INSERT INTO rooms (name, owner) VALUES ('抽奖', 'admin')`);
+                        db.run(`INSERT INTO rooms (name, owner) VALUES ('拍卖', 'admin')`);
+                        db.run(`INSERT INTO rooms (name, owner) VALUES ('教培', 'admin')`);
+                        db.run(`INSERT INTO rooms (name, owner) VALUES ('对弈', 'admin')`);
+                        db.run(`INSERT INTO rooms (name, owner) VALUES ('对战Tetris', 'admin')`);
+                        db.run(`INSERT INTO rooms (name, owner) VALUES ('桥牌/掼蛋', 'admin')`);
                     }
                 });
-                db.run(`INSERT INTO rooms (name, owner) VALUES ('rro', 'admin')`);
-                db.run(`INSERT INTO rooms (name, owner) VALUES ('抽奖', 'admin')`);
-                db.run(`INSERT INTO rooms (name, owner) VALUES ('拍卖', 'admin')`);
-                db.run(`INSERT INTO rooms (name, owner) VALUES ('教培', 'admin')`);
-                db.run(`INSERT INTO rooms (name, owner) VALUES ('对弈', 'admin')`);
-                db.run(`INSERT INTO rooms (name, owner) VALUES ('对战Tetris', 'admin')`);
-                db.run(`INSERT INTO rooms (name, owner) VALUES ('桥牌/掼蛋', 'admin')`);
             }
         });
 
