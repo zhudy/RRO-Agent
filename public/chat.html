@@ -27,6 +27,8 @@
     <div id="messages"></div>
     <input id="messageInput" type="text" placeholder="输入消息...">
     <button id="sendButton">发送</button>
+    <input id="fileInput" type="file" accept="*/*" style="display: none;">
+    <button id="uploadButton">选择文件并上传</button>
 
 
     <script>
@@ -63,6 +65,35 @@
             messagesDiv.innerHTML += `<p><strong>${data.username}:</strong> ${data.message}</p>`; // 显示用户名和消息
             messagesDiv.scrollTop = messagesDiv.scrollHeight; // 滚动到最新消息
         });
+
+        // 处理文件上传
+        document.getElementById('uploadButton').onclick = function() {
+            const fileInput = document.getElementById('fileInput');
+            fileInput.click(); // 触发文件选择对话框
+
+            fileInput.onchange = function() {
+                const file = fileInput.files[0]; // 获取选择的文件
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file); // 将文件添加到表单数据中
+
+                    // 发送文件到服务器
+                    fetch('/uploads', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.url) {
+                            const messagesDiv = document.getElementById('messages');
+                            messagesDiv.innerHTML += `<p><strong>${username}:</strong> <a href="${data.url}" target="_blank">${file.name}</a></p>`; // 显示文件链接
+                            messagesDiv.scrollTop = messagesDiv.scrollHeight; // 滚动到最新消息
+                        }
+                    })
+                    .catch(error => console.error('文件上传失败:', error));
+                }
+            };
+        };
     </script>
 </body>
 </html>

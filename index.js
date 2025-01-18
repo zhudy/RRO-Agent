@@ -7,6 +7,7 @@ import { Server } from 'socket.io';
 import * as database from './database.js';
 import { getRooms } from './database.js';
 import User from './user.js';
+import multer from 'multer'; // 引入 multer 用于处理文件上传
 
 const app = express();
 const httpServer = app.listen(3000, () => {
@@ -19,6 +20,27 @@ app.use(express.static('public'));
 
 // 从数据库获取用户列表
 const userList = await database.getUsers();
+
+// 设置 multer 存储配置
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads'); // 上传文件存储目录
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname); // 使用原始文件名
+    }
+});
+
+const upload = multer({ storage });
+
+// 处理文件上传
+app.post('/uploads', upload.single('file'), (req, res) => {
+    if (req.file) {
+        res.status(200).json({ url: `/uploads/${req.file.filename}` }); // 返回文件的访问链接
+    } else {
+        res.status(400).json({ message: '文件上传失败' });
+    }
+});
 
 /**
  * 用户注册
@@ -79,6 +101,9 @@ app.post('/rooms', async (req, res) => {
         res.status(500).json({ error: '获取房间列表失败' });
     }
 });
+
+// 提供文件上传的静态文件服务
+app.use('/uploads', express.static('uploads')); // 允许访问 uploads 目录中的文件
 
 // Socket.io 连接
 io.on('connection', (socket) => {
