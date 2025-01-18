@@ -32,6 +32,9 @@ class ChatClient {
         this.socket.on('chatMessage', (message) => {
             //console.log(`收到消息: ${message}`);
             console.log('收到消息: ' + message.username + ": "+ message.message + "房间: " + message.currentroom);
+            if (message.message === "请求开会") {
+                this.sendMessage("请给会议起一个名字", message.currentroom);
+            }
         });
     }
 
