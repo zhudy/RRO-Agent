@@ -79,9 +79,12 @@
             } 
             
             // 根据共享状态决定消息显示区域
-            if( isSharing) document.getElementById('sharedMessages').innerHTML = ''; // 清空共享区域内容
             const targetDiv = isSharing ? document.getElementById('sharedMessages') : document.getElementById('messages');
-            targetDiv.innerHTML += `<p><strong>${data.username}:</strong> ${data.message}</p>`; // 显示用户名和消息
+            if (isSharing) {
+                targetDiv.innerHTML = `<p>${data.message}</p>`; // 显示消息，不包含用户名
+            } else {
+                targetDiv.innerHTML += `<p><strong>${data.username}:</strong> ${data.message}</p>`; // 显示用户名和消息
+            }
             targetDiv.scrollTop = targetDiv.scrollHeight; // 滚动到最新消息
         });
 
