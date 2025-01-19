@@ -69,14 +69,17 @@
             if (data.message === "startShare") {
                 isSharing = true; // 设置为共享状态
                 document.getElementById('sharedMessages').style.display = 'block'; // 显示共享区域
+                document.getElementById('messages').style.display = 'none'; // 隐藏消息区域
                 return; // 不显示该消息
             } else if (data.message === "stopShare") {
                 isSharing = false; // 取消共享状态
                 document.getElementById('sharedMessages').style.display = 'none'; // 隐藏共享区域
+                document.getElementById('messages').style.display = 'block'; // 显示消息区域
                 return; // 不显示该消息
             } 
             
             // 根据共享状态决定消息显示区域
+            if( isSharing) document.getElementById('sharedMessages').innerHTML = ''; // 清空共享区域内容
             const targetDiv = isSharing ? document.getElementById('sharedMessages') : document.getElementById('messages');
             targetDiv.innerHTML += `<p><strong>${data.username}:</strong> ${data.message}</p>`; // 显示用户名和消息
             targetDiv.scrollTop = targetDiv.scrollHeight; // 滚动到最新消息
