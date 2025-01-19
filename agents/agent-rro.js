@@ -1,7 +1,7 @@
 //编写nodejs客户端代码，接受参数：url: 聊天服务器的访问地址; rname: 房间名
 //npm install socket.io-client
 //node agent-rro.js http://localhost:3000 defaultRoom userName
-//实操：node agent-rro.js http://localhost:3000 rro 罗蜜欧
+//实操：node agent-rro.js http://localhost:3000 rro rro
 
 import { io } from 'socket.io-client'; // 导入 socket.io-client
 

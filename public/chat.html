@@ -54,8 +54,11 @@
 
         // 发送消息
         document.getElementById('sendButton').onclick = function() {
-            const message = document.getElementById('messageInput').value;
+            var message = document.getElementById('messageInput').value;
             if (message) { // 确保消息不为空
+                if (isSharing) {    //共享ppt时候，用户输入改成私信给rro agent
+                    if(message != 'stopShare') message = "to uname: rro " + message;
+                }
                 socket.emit('chatMessage', { username, message, currentroom }); // 发送包含用户名的消息
                 document.getElementById('messageInput').value = ''; // 清空输入框
             }
