@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>在线聊天室</title>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -81,7 +82,7 @@
             // 根据共享状态决定消息显示区域
             const targetDiv = isSharing ? document.getElementById('sharedMessages') : document.getElementById('messages');
             if (isSharing) {
-                targetDiv.innerHTML = `<p>${data.message}</p>`; // 显示消息，不包含用户名
+                targetDiv.innerHTML = marked.marked(data.message); // 使用 marked.js 解析 Markdown 格式的消息
             } else {
                 targetDiv.innerHTML += `<p><strong>${data.username}:</strong> ${data.message}</p>`; // 显示用户名和消息
             }
