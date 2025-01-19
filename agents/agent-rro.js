@@ -32,8 +32,10 @@ class ChatClient {
         this.socket.on('chatMessage', (message) => {
             //console.log(`收到消息: ${message}`);
             console.log('收到消息: ' + message.username + ": "+ message.message + "房间: " + message.currentroom);
-            if (message.message === "请求开会") {
-                this.sendMessage("请给会议起一个名字", message.currentroom);
+            if (message.message === "私信来也：请求开会") { //直接发送“私信来也：请求开会” 或者：“to uname: rro 请求开会”
+                // this.sendMessage("请给会议起一个名字", message.currentroom);
+                this.sendMessage("#请给会议起一个名字<br># [会议名称]讨论会<br># 封面页<br>**会议主题**：\[公司名称] \[会议名称]讨论会<br>**会议时间与地点**：\[具体日期] \[具体时间]，\[详细会议地点]（线上会议则为会议链接或会议号）<br>", message.currentroom);
+
             }
         });
     }
