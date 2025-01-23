@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiplayer Tetris</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Multiplayer Tetris</h1>
+    <div class="game-container">
+      <div class="game-area">
+        <div class="player-area">
+          <h3>Your Game</h3>
+          <canvas id="player1" width="300" height="600"></canvas>
+        </div>
+        <div class="player-area">
+          <h3>Opponent</h3>
+          <canvas id="player2" width="300" height="600"></canvas>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="room-controls">
+          <input type="text" id="roomId" placeholder="Enter room ID">
+          <button id="joinRoom">Join Room</button>
+          <button id="restartGame" class="game-button" style="display: none;">Restart Game</button>
+        </div>
+        <div class="next-piece">
+          <h3>Next Piece</h3>
+          <canvas id="nextPiece" width="120" height="120"></canvas>
+        </div>
+        <div class="score">
+          <h3>Score: <span id="score">0</span></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
